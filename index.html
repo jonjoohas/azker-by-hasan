@@ -145,26 +145,7 @@
 
   <script>
 
-// 1. تسجيل ملف الخدمة Service Worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
 
-  // 2. التحكم بزر التثبيت
-  let deferredPrompt;
-  const installBanner = document.getElementById('installBanner');
-  const installBtn = document.getElementById('installBtn');
-
-  // التقاط حدث التثبيت المتاح من المتصفح
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault(); // منع ظهور الشريط الافتراضي للمتصفح
-    deferredPrompt = e;
-    
-    // إظهار شريط التثبيت الخاص بنا
-    if (installBanner) {
-      installBanner.style.display = 'block';
-    }
-  });
 
   // عند الضغط على زر "تثبيت الآن"
   if (installBtn) {
