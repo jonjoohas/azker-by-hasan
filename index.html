@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>الأذكار</title>
   
-  <!-- أيقونة الموقع للمتصفح والجوال -->
+  <!-- أيقونة الموقع للمتصفح والشاشة الرئيسية -->
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#10B981">
-  
-  <!-- Tailwind CSS -->
-  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- Tailwind CSS & FontAwesome Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    @import url('[https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap](https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap)');
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
     
     * {
       font-family: 'Tajawal', sans-serif;
@@ -51,6 +51,12 @@
 
   <!-- الحاوية الرئيسية -->
   <div class="relative z-10 min-h-screen w-full flex flex-col justify-between p-4 sm:p-6 md:p-8 gap-6">
+
+    <!-- شريط تثبيت التطبيق (PWA Install Banner) -->
+    <div id="installBanner" style="display: none;" class="glass-box p-3 rounded-2xl text-center max-w-md mx-auto w-full border border-emerald-500/30">
+      <span class="text-xs sm:text-sm font-bold block mb-2 text-white">📲 تثبيت التطبيق على هاتفك لتصفح أسهل وأسرع!</span>
+      <button id="installBtn" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition active:scale-95">تثبيت الآن</button>
+    </div>
 
     <!-- 1. القسم العلوي: الساعة والطقس -->
     <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-start w-full gap-3 sm:gap-4">
@@ -126,149 +132,36 @@
 
   </div>
 
-  <!-- مشغل الصوتيات (تم تصحيحه) -->
+  <!-- مشغل الصوتيات (ضع رابط الصوت أو اسم الملف داخل src) -->
   <audio id="main-audio" src="أذكار الصباح - لاالقارئ علاء عقل _ (MP3_128K).mp3"></audio>
 
   <script>
-    // 1. تسجيل ملف الخدمة للـ PWA
+    // 1. تسجيل ملف الخدمة والتحكم بزر تثبيت التطبيق (PWA)
+    let deferredPrompt;
+    const installBanner = document.getElementById('installBanner');
+    const installBtn = document.getElementById('installBtn');
+
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
     }
 
-    // 2. خلفيات الحرم المكي الشريف
-    const WALLPAPERS = [
-      '[https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=2000&auto=format&fit=crop](https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=2000&auto=format&fit=crop)',
-      '[https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?q=80&w=2000&auto=format&fit=crop](https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?q=80&w=2000&auto=format&fit=crop)',
-      '[https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=2000&auto=format&fit=crop](https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=2000&auto=format&fit=crop)',
-      '[https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?q=80&w=2000&auto=format&fit=crop](https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?q=80&w=2000&auto=format&fit=crop)'
-    ];
-
-    let currentBgIndex = 0;
-    let activeLayer = 1;
-    let autoSlideInterval = null;
-    let isAutoSlideActive = true;
-
-    document.getElementById('bg-layer-1').style.backgroundImage = "url('" + WALLPAPERS[0] + "')";
-
-    function changeWallpaper(index) {
-      const nextUrl = WALLPAPERS[index];
-      const layer1 = document.getElementById('bg-layer-1');
-      const layer2 = document.getElementById('bg-layer-2');
-
-      if (activeLayer === 1) {
-        layer2.style.backgroundImage = "url('" + nextUrl + "')";
-        layer2.style.opacity = '1';
-        layer1.style.opacity = '0';
-        activeLayer = 2;
-      } else {
-        layer1.style.backgroundImage = "url('" + nextUrl + "')";
-        layer1.style.opacity = '1';
-        layer2.style.opacity = '0';
-        activeLayer = 1;
-      }
-    }
-
-    function nextWallpaper() {
-      currentBgIndex = (currentBgIndex + 1) % WALLPAPERS.length;
-      changeWallpaper(currentBgIndex);
-    }
-
-    function prevWallpaper() {
-      currentBgIndex = (currentBgIndex - 1 + WALLPAPERS.length) % WALLPAPERS.length;
-      changeWallpaper(currentBgIndex);
-    }
-
-    function toggleAutoSlide() {
-      const icon = document.getElementById('slide-toggle-icon');
-      if (isAutoSlideActive) {
-        clearInterval(autoSlideInterval);
-        icon.className = 'fa-solid fa-play';
-      } else {
-        autoSlideInterval = setInterval(nextWallpaper, 8000);
-        icon.className = 'fa-solid fa-pause';
-      }
-      isAutoSlideActive = !isAutoSlideActive;
-    }
-
-    autoSlideInterval = setInterval(nextWallpaper, 8000);
-
-    // 3. الساعة والتاريخ
-    function updateClockAndDates() {
-      const now = new Date();
-
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const seconds = String(now.getSeconds()).padStart(2, '0');
-      
-      document.getElementById('clock-time').innerText = hours + ':' + minutes + ':' + seconds;
-
-      const optionsGregorian = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
-      document.getElementById('gregorian-date').innerText = now.toLocaleDateString('en-US', optionsGregorian);
-
-      try {
-        const optionsHijri = { calendar: 'islamic-umalqura', day: 'numeric', month: 'long', year: 'numeric' };
-        document.getElementById('hijri-date').innerText = now.toLocaleDateString('ar-SA-u-ca-islamic-umalqura', optionsHijri);
-      } catch (e) {
-        document.getElementById('hijri-date').innerText = '1448 هـ';
-      }
-    }
-
-    setInterval(updateClockAndDates, 1000);
-    updateClockAndDates();
-
-    // 4. طقس حلب
-    async function fetchAleppoWeather() {
-      try {
-        const res = await fetch('[https://api.open-meteo.com/v1/forecast?latitude=36.2021&longitude=37.1343&current_weather=true](https://api.open-meteo.com/v1/forecast?latitude=36.2021&longitude=37.1343&current_weather=true)');
-        const data = await res.json();
-
-        if (data.current_weather) {
-          const temp = Math.round(data.current_weather.temperature);
-          document.getElementById('weather-temp').innerText = temp + '°C';
-          
-          const code = data.current_weather.weathercode;
-          if (code === 0) {
-            document.getElementById('weather-desc').innerText = 'مشمس وجميل';
-            document.getElementById('weather-icon').className = 'fa-solid fa-sun text-2xl text-amber-400';
-          } else if (code <= 3) {
-            document.getElementById('weather-desc').innerText = 'غائم جزئياً';
-            document.getElementById('weather-icon').className = 'fa-solid fa-cloud-sun text-2xl text-amber-300';
-          } else {
-            document.getElementById('weather-desc').innerText = 'طقس معتدل';
-            document.getElementById('weather-icon').className = 'fa-solid fa-cloud text-2xl text-slate-300';
-          }
-        }
-      } catch (err) {
-        document.getElementById('weather-temp').innerText = '24°C';
-        document.getElementById('weather-desc').innerText = 'طقس لطيف';
-      }
-    }
-
-    fetchAleppoWeather();
-
-    // 5. التحكم بالصوتيات
-    const audioPlayer = document.getElementById('main-audio');
-    const playBtn = document.getElementById('play-btn');
-    const playIcon = document.getElementById('play-icon');
-    const playText = document.getElementById('play-text');
-
-    playBtn.addEventListener('click', () => {
-      if (audioPlayer.paused) {
-        audioPlayer.play();
-        playIcon.className = 'fa-solid fa-pause';
-        playText.innerText = 'إيقاف مؤقت';
-      } else {
-        audioPlayer.pause();
-        playIcon.className = 'fa-solid fa-play';
-        playText.innerText = 'تشغيل';
-      }
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (installBanner) installBanner.style.display = 'block';
     });
 
-    // إعادة شكل الزر لـ "تشغيل" عند انتهاء المقطع الصوتي
-    audioPlayer.addEventListener('ended', () => {
-      playIcon.className = 'fa-solid fa-play';
-      playText.innerText = 'تشغيل';
-    });
-  </script>
-</body>
-</html>
+    if (installBtn) {
+      installBtn.addEventListener('click', async () => {
+السبب في عدم عمل الصوت وجود **خطأين في وسم مشغل الصوت `<audio>`** داخل الكود:
+
+1. **اختلاف الـ `id`**: في السكربت يطلب الجافاسكريبت العنصر المسمى `id="main-audio"`، بينما وضعت اسم الملف مكان الـ `id`.
+2. **غياب رابط الملف `src`**: وسم الصوت ينقصه تحديد مسار الملف `src="..."`.
+
+---
+
+### التصحيح السريع:
+
+في الكود القديم كان الوسم بهذا الشكل (خطأ):
+```html
+<audio id="أذكار الصباح - لاالقارئ علاء عقل _ (MP3_128K).mp3"></audio>
