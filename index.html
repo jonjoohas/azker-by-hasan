@@ -45,6 +45,17 @@
 </head>
 <body class="relative w-screen h-screen overflow-x-hidden overflow-y-auto bg-black text-white">
 
+<!-- شريط زر تثبيت التطبيق -->
+<div id="installBanner" style="display: none; background-color: #10B981; color: white; padding: 12px 16px; border-radius: 12px; margin: 15px auto; text-align: center; max-width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+  <span style="font-size: 15px; font-weight: bold; display: block; margin-bottom: 8px;">
+    📲 تثبيت التطبيق على هاتفك لتصفح أسهل وأسرع!
+  </span>
+  <button id="installBtn" style="background-color: white; color: #10B981; border: none; padding: 8px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    تثبيت الآن
+  </button>
+</div>
+
+  
   <!-- طبقات خلفية السلايدر -->
   <div id="bg-layer-1" class="bg-slider fixed inset-0 opacity-100"></div>
   <div id="bg-layer-2" class="bg-slider fixed inset-0 opacity-0"></div>
@@ -133,6 +144,50 @@
 <audio id="أذكار الصباح - لاالقارئ علاء عقل _ (MP3_128K).mp3"></audio>
 
   <script>
+
+// 1. تسجيل ملف الخدمة Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+
+  // 2. التحكم بزر التثبيت
+  let deferredPrompt;
+  const installBanner = document.getElementById('installBanner');
+  const installBtn = document.getElementById('installBtn');
+
+  // التقاط حدث التثبيت المتاح من المتصفح
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault(); // منع ظهور الشريط الافتراضي للمتصفح
+    deferredPrompt = e;
+    
+    // إظهار شريط التثبيت الخاص بنا
+    if (installBanner) {
+      installBanner.style.display = 'block';
+    }
+  });
+
+  // عند الضغط على زر "تثبيت الآن"
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      
+      deferredPrompt.prompt(); // إظهار نافذة التثبيت الرسمية
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      deferredPrompt = null;
+      installBanner.style.display = 'none'; // إخفاء الزر بعد الاختيار
+    });
+  }
+
+  // إخفاء الزر إذا كان التطبيق مثبتاً بالفعل على الجهاز
+  window.addEventListener('appinstalled', () => {
+    if (installBanner) {
+      installBanner.style.display = 'none';
+    }
+    deferredPrompt = null;
+  });
+
+    
     // 1. خلفيات الحرم المكي الشريف (روابط مباشرة ومحدثة)
     const WALLPAPERS = [
       'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=2000&auto=format&fit=crop',
