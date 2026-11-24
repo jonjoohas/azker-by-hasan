@@ -3,29 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> الأذكار </title>
+  <title>الأذكار</title>
+
   <!-- أيقونة الموقع للمتصفح -->
-<link rel="icon" type="image/png" href="icon.png">
+  <link rel="icon" type="image/png" href="icon.png">
+  <!-- أيقونة الشاشة الرئيسية للجوال (Android & iPhone) -->
+  <link rel="apple-touch-icon" href="icon.png">
 
-
-<!-- أيقونة الشاشة الرئيسية للجوال (Android & iPhone) -->
-<link rel="apple-touch-icon" href="icon.png">
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#059669">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-
-
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#059669">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
-    
+
     * {
       font-family: 'Tajawal', sans-serif;
       user-select: none;
@@ -39,96 +36,95 @@
       background-repeat: no-repeat;
     }
 
-    .glass-box {
-      backdrop-filter: blur(1px);
-      -webkit-backdrop-filter: blur(1px);
-      
+    /* تحسينات إضافية للشاشات الصغيرة جداً */
+    @media (max-width: 639px) {
+      #clock-time {
+        font-size: 3.0rem;
+        line-height: 100%;
+      }
+      #gregorian-date {
+        font-size: 1.0rem;
+        line-height: 1.35;
+      }
+      #hijri-date {
+        font-size: 1.0rem;
+      }
     }
-
-    
   </style>
 </head>
-<body class="relative w-screen h-screen overflow-x-hidden overflow-y-auto bg-black text-white">
+<body class="relative min-h-screen w-full overflow-x-hidden bg-black text-white">
 
   <!-- طبقات خلفية السلايدر -->
   <div id="bg-layer-1" class="bg-slider fixed inset-0 opacity-100"></div>
   <div id="bg-layer-2" class="bg-slider fixed inset-0 opacity-0"></div>
 
   <!-- تظليل خفيف -->
-  <div class="fixed inset-0 bg-black/35"></div>
+  <div class="fixed inset-0 bg-black/35 pointer-events-none"></div>
 
   <!-- الحاوية الرئيسية -->
   <div class="relative z-10 min-h-screen w-full flex flex-col justify-between p-4 sm:p-6 md:p-8 gap-6">
 
     <!-- 1. القسم العلوي: الساعة والطقس -->
-    <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-start w-full gap-3 sm:gap-4">
-      
+    <div class="flex flex-col sm:flex-row justify-between items-center sm:items-start w-full gap-4">
+
       <!-- الساعة والتاريخ -->
-      
-      <div class="    rounded-2xl flex flex-col items-center justify-center  ">
-        <div id="clock-time" class="text-3xl    sm:text-5xl font-semibold tracking-widest font-mono text-white">00:00:00</div>
-        <div id="gregorian-date" class="text-5xl sm:text-base font-bold text-slate-20 mt-1">--</div>
-        <div id="hijri-date" class="text-base font-bold text-emerald-400 mt-1">جاري التحميل...</div>
+      <div class=" px-1 py-1 rounded-2xl flex flex-col items-center sm:items-start justify-center text-center sm:text-right w-full sm:w-auto">
+        <div id="clock-time" class="text-3xl sm:text-4xl md:text-6xl font-semibold tracking-wider font-mono text-white">00:00:00</div>
+        <div id="gregorian-date" class="text-lg sm:text-sm md:text-xl font-bold text-slate-200 mt-1">--</div>
+        <div id="hijri-date" class="text-sm  font-bold text-emerald-400 px-12">جاري التحميل...</div>
       </div>
 
-      <!-- الطقس والموقع (حلب ) -->
-    
-      <div class="  shadow-md  p-4 rounded-2xl flex flex-col items-center sm:items-end justify-center  min-w-[20px]">
-        <div class="text-xl sm:text-l font-extrabold text-white mb-1">الطقس</div>
+      <!-- الطقس والموقع (حلب) -->
+      <div class="  px-4 rounded-2xl flex flex-col items-center sm:items-end justify-center w-full sm:w-auto min-w-[10px]">
+        <div class="text-lg sm:text-xl font-extrabold text-white mb-1">الطقس</div>
         <div class="flex items-center gap-2 sm:gap-3">
-          <i id="weather-icon" class="fa-solid fa-sun text-2xl text-amber-400"></i>
-          <span id="weather-temp" class="text-2xl font-bold">--°C</span>
+          <i id="weather-icon" class="fa-solid fa-sun text-2xl sm:text-3xl text-amber-400"></i>
+          <span id="weather-temp" class="text-2xl sm:text-3xl font-bold">--°C</span>
         </div>
-        <div id="weather-desc" class="text-xs text-slate-300 mt-1 font-medium">جاري جلب الطقس...</div>
-        <div class="text-xs sm:text-sm font-extrabold text-emerald-400 mt-2 flex items-center gap-1.5">
-          <i class="fa-solid fa-location-dot  pl-1  " ></i>
+        <div id="weather-desc" class=" sm:text-xl text-slate-300 mt-1 font-medium">جاري جلب الطقس...</div>
+        <div class="text-l sm:text-sm font-extrabold text-emerald-400 mt-2 flex items-center gap-1.5">
+          <i class="fa-solid fa-location-dot"></i>
           <span id="location-name">حلب</span>
         </div>
       </div>
 
     </div>
 
-    <!-- القسم الأوسط: مشغل الأذكار (القارئ علاء عقل) -->
-<div class=" fixed bottom-5 left-1/2 -translate-x-1/2 z-20 flex justify-center w-10 mt-auto ">
-  <div class="glass-box shadow-md p-4 rounded-2xl flex items-center justify-between gap-4 w-full m:w- min-w-[280px] max-w-md shadow-">
-    
-    <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm sm:text-base">
-      <i class="fa-solid fa-microphone"></i>
-      <span>القارئ علاء عقل</span>
-    </div>
-
-    <button id="play-btn" class="bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-00 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95 shadow-md">
-      <i id="play-icon" class="fa-solid fa-play"></i>
-      <span id="play-text">تشغيل</span>
-    </button>
-
-  </div>
-</div>
-
-    <!-- 3. القسم السفلي: التحكم بالسلايدر والإهداء -->
-    <div class="flex flex-col-reverse sm:flex-row justify-between items-center sm:item-end w-full gap-4">
-
-      <div class="w-48 hidden md:block"></div>
+    <!-- 2. القسم السفلي الموحد: السلايدر + مشغل الأذكار + الإهداء -->
+    <div class="w-full flex flex-col lg:flex-row items-center justify-between gap-4 mt-auto pt-2">
 
       <!-- أزرار تحكم السلايدر -->
-      <div class="fixed bottom-6 right-6 z-20 flex items-center gap-2">
-        <button onclick="prevWallpaper()" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 active:scale-90 flex items-center justify-center text-white transition">
+      <div class="   shadow-md  px-3 py-2 rounded-2xl flex items-center justify-center gap-2 order-3 lg:order-1">
+        <button onclick="prevWallpaper()" aria-label="الخلفية السابقة" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 active:scale-90 flex items-center justify-center text-white transition">
           <i class="fa-solid fa-chevron-right"></i>
         </button>
-        <button id="slide-toggle-btn" onclick="toggleAutoSlide()" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 active:scale-90 flex items-center justify-center text-white transition">
+        <button id="slide-toggle-btn" onclick="toggleAutoSlide()" aria-label="تشغيل أو إيقاف السلايدر" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 active:scale-90 flex items-center justify-center text-white transition">
           <i id="slide-toggle-icon" class="fa-solid fa-pause"></i>
         </button>
-        <button onclick="nextWallpaper()" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 active:scale-90 flex items-center justify-center text-white transition">
+        <button onclick="nextWallpaper()" aria-label="الخلفية التالية" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 active:scale-90 flex items-center justify-center text-white transition">
           <i class="fa-solid fa-chevron-left"></i>
         </button>
       </div>
 
+      <!-- مشغل الأذكار (القارئ علاء عقل) -->
+      <div class="shadow-md px-4 py-3 rounded-2xl flex items-center justify-between gap-4 w-full sm:w-auto min-w-[280px] max-w-md order-1 lg:order-2">
+        <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm sm:text-base">
+          <i class="fa-solid fa-microphone"></i>
+          <span>القارئ علاء عقل</span>
+        </div>
+
+        <button id="play-btn" class="bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition active:scale-95 shadow-md shrink-0">
+          <i id="play-icon" class="fa-solid fa-play"></i>
+          <span id="play-text">تشغيل</span>
+        </button>
+      </div>
+
       <!-- كارت الإهداء والتبريك -->
-      <div class="glass-box px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-2xl w-full sm:w-auto justify-center sm:justify-start">
-        <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+      <div class=" shadow-md px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-2xl w-full sm:w-auto justify-center sm:justify-start order-2 lg:order-3">
+        <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shrink-0"></div>
         <div class="flex flex-col text-right">
-          <span class="text-xl sm:text-sm font-extrabold text-white">اللهم صلي على سيدنا محمد</span>
-          <span class="text-[10px] sm:text-xl font-semibold text-slate-300">المهندس حسن كلاوي</span>
+          <span class="text-sm sm:text-base font-extrabold text-white">اللهم صلي على سيدنا محمد</span>
+          <span class="text-xs sm:text-sm font-semibold text-slate-300">المهندس حسن كلاوي</span>
         </div>
       </div>
 
@@ -136,12 +132,11 @@
 
   </div>
 
-<!-- مشغل الصوتيات -->
-<audio id="main-audio" src="أذكار الصباح - لاالقارئ علاء عقل _ (MP3_128K).mp3"></audio>
+  <!-- مشغل الصوتيات -->
+  <audio id="main-audio" src="أذكار الصباح - لاالقارئ علاء عقل _ (MP3_128K).mp3"></audio>
 
   <script>
-    
-    // 1. خلفيات الحرم المكي الشريف (روابط مباشرة ومحدثة)
+    // 1. خلفيات الحرم المكي الشريف
     const WALLPAPERS = [
       'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=2000&auto=format&fit=crop',
       'https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?q=80&w=2000&auto=format&fit=crop',
@@ -161,7 +156,7 @@
       'https://images.unsplash.com/photo-1510423579098-f47bf52b6764?q=80&w=1173&auto=format&fit=crop',
       'https://images.unsplash.com/photo-1543843665-77bc199b4209?q=80&w=1170&auto=format&fit=crop',
       'https://images.unsplash.com/photo-1760365948071-d7537c384ea0?q=80&w=1170&auto=format&fit=crop',
-'https://plus.unsplash.com/premium_photo-1710030733249-5d7c34509f61?q=80&w=1170&auto=format&fit=crop'
+      'https://plus.unsplash.com/premium_photo-1710030733249-5d7c34509f61?q=80&w=1170&auto=format&fit=crop'
     ];
 
     let currentBgIndex = 0;
@@ -213,98 +208,99 @@
 
     autoSlideInterval = setInterval(nextWallpaper, 8000);
 
-// 2. الساعة والتاريخ
-function updateClockAndDates() {
-    const now = new Date();
+    // 2. الساعة والتاريخ
+    function updateClockAndDates() {
+      const now = new Date();
 
-    let rawHours = now.getHours();
-    const period = rawHours >= 12 ? 'م' : 'ص';
-    rawHours = rawHours % 12;
-    if (rawHours === 0) rawHours = 12;
+      let rawHours = now.getHours();
+      const period = rawHours >= 12 ? 'م' : 'ص';
+      rawHours = rawHours % 12;
+      if (rawHours === 0) rawHours = 12;
 
-    const hours = String(rawHours).padStart(1, '0');
-    const minutes = String(now.getMinutes()).padStart(1, '0');
-    const seconds = String(now.getSeconds()).padStart(1, '0');
+      const hours = String(rawHours).padStart(1, '0');
+      const minutes = String(now.getMinutes()).padStart(1, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
 
-    document.getElementById('clock-time').innerText = hours + ':' + minutes + ':' + seconds + ' ' + period;
+      document.getElementById('clock-time').innerText = hours + ':' + minutes + ':' + seconds + ' ' + period;
 
-    const optionsGregorian = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
-    document.getElementById('gregorian-date').innerText = now.toLocaleDateString('ar-sy', optionsGregorian);
+      const optionsGregorian = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+      document.getElementById('gregorian-date').innerText = now.toLocaleDateString('ar-sy', optionsGregorian);
 
-    try {
+      try {
         const optionsHijri = { calendar: 'islamic-umalqura', day: 'numeric', month: 'long', year: 'numeric' };
         document.getElementById('hijri-date').innerText = now.toLocaleDateString('ar-SA-u-ca-islamic-umalqura', optionsHijri);
-    } catch (e) {
+      } catch (e) {
         document.getElementById('hijri-date').innerText = '1448 هـ';
+      }
     }
-}
     setInterval(updateClockAndDates, 1000);
     updateClockAndDates();
 
     // 3. طقس حلب
-async function fetchAleppoWeather() {
-  try {
-    const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=36.2021&longitude=37.1343&current_weather=true');
-    const data = await res.json();
+    async function fetchAleppoWeather() {
+      try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=36.2021&longitude=37.1343&current_weather=true');
+        const data = await res.json();
 
-    if (data.current_weather) {
-      const temp = Math.round(data.current_weather.temperature);
-      document.getElementById('weather-temp').innerText = temp + '°C';
+        if (data.current_weather) {
+          const temp = Math.round(data.current_weather.temperature);
+          document.getElementById('weather-temp').innerText = temp + '°C';
 
-      const code = data.current_weather.weathercode;
-      const isDay = data.current_weather.is_day; // 1 = نهار ، 0 = ليل
-      const descEl = document.getElementById('weather-desc');
-      const iconEl = document.getElementById('weather-icon');
+          const code = data.current_weather.weathercode;
+          const isDay = data.current_weather.is_day; // 1 = نهار ، 0 = ليل
+          const descEl = document.getElementById('weather-desc');
+          const iconEl = document.getElementById('weather-icon');
 
-      if (code === 0) {
-        if (isDay === 1) {
-          descEl.innerText = 'مشمس وجميل';
-          iconEl.className = 'fa-solid fa-sun text-2xl text-amber-400';
-        } else {
-          descEl.innerText = 'ليل صافٍ';
-          iconEl.className = 'fa-solid fa-moon text-2xl text-slate-200';
+          if (code === 0) {
+            if (isDay === 1) {
+              descEl.innerText = 'مشمس وجميل';
+              iconEl.className = 'fa-solid fa-sun text-2xl sm:text-3xl text-amber-400';
+            } else {
+              descEl.innerText = 'ليل صافٍ';
+              iconEl.className = 'fa-solid fa-moon text-2xl sm:text-3xl text-slate-200';
+            }
+          } else if (code <= 3) {
+            if (isDay === 1) {
+              descEl.innerText = 'غائم جزئياً';
+              iconEl.className = 'fa-solid fa-cloud-sun text-2xl sm:text-3xl text-amber-300';
+            } else {
+              descEl.innerText = 'غائم جزئياً ليلاً';
+              iconEl.className = 'fa-solid fa-cloud-moon text-2xl sm:text-3xl text-slate-300';
+            }
+          } else {
+            descEl.innerText = 'طقس معتدل';
+            iconEl.className = 'fa-solid fa-cloud text-2xl sm:text-3xl text-slate-300';
+          }
         }
-      } else if (code <= 3) {
-        if (isDay === 1) {
-          descEl.innerText = 'غائم جزئياً';
-          iconEl.className = 'fa-solid fa-cloud-sun text-2xl text-amber-300';
-        } else {
-          descEl.innerText = 'غائم جزئياً ليلاً';
-          iconEl.className = 'fa-solid fa-cloud-moon text-2xl text-slate-300';
-        }
-      } else {
-        descEl.innerText = 'طقس معتدل';
-        iconEl.className = 'fa-solid fa-cloud text-2xl text-slate-300';
+      } catch (err) {
+        document.getElementById('weather-temp').innerText = '24°C';
+        document.getElementById('weather-desc').innerText = 'طقس لطيف';
       }
     }
-  } catch (err) {
-    document.getElementById('weather-temp').innerText = '24°C';
-    document.getElementById('weather-desc').innerText = 'طقس لطيف';
-  }
-}
     fetchAleppoWeather();
+    setInterval(fetchAleppoWeather, 600000); // تحديث كل 10 دقائق
 
-    // 4. الصوتيات
     // 4. التحكم بالصوتيات
-const audioPlayer = document.getElementById('main-audio');
-const playBtn = document.getElementById('play-btn');
-const playIcon = document.getElementById('play-icon');
-const playText = document.getElementById('play-text');
+    const audioPlayer = document.getElementById('main-audio');
+    const playBtn = document.getElementById('play-btn');
+    const playIcon = document.getElementById('play-icon');
+    const playText = document.getElementById('play-text');
 
-playBtn.addEventListener('click', () => {
-  if (audioPlayer.paused) {
-    audioPlayer.play();
-    playIcon.className = 'fa-solid fa-pause';
-    playText.innerText = 'إيقاف مؤقت';
-  } else {
-    audioPlayer.pause();
-    playIcon.className = 'fa-solid fa-play';
-    playText.innerText = 'تشغيل';
-  }
-});
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js');
-}
+    playBtn.addEventListener('click', () => {
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+        playIcon.className = 'fa-solid fa-pause';
+        playText.innerText = 'إيقاف مؤقت';
+      } else {
+        audioPlayer.pause();
+        playIcon.className = 'fa-solid fa-play';
+        playText.innerText = 'تشغيل';
+      }
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
   </script>
 </body>
 </html>
